@@ -10,10 +10,26 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
+    var window: UIWindow?
+    lazy var navController = UINavigationController()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        if #available(iOS 13, *) {
+            // do only pure app launch stuff, not interface stuff
+        } else {
+            self.window = UIWindow()
+            window?.overrideUserInterfaceStyle = .light
+            let vm = FlickrViewModel()
+            let vc: FeedViewController
+            if UIDevice.current.orientation.isLandscape {
+                vc = FeedViewController(maxCountOfItemsInSection: MaxCountOfItemsInSection.horizontal.rawValue, viewmodel: vm)
+            } else {
+                vc = FeedViewController(maxCountOfItemsInSection: MaxCountOfItemsInSection.vertical.rawValue, viewmodel: vm)
+            }
+            navController.pushViewController(vc, animated: true)
+            self.window?.rootViewController = navController
+            self.window?.makeKeyAndVisible()
+        }
         return true
     }
 
