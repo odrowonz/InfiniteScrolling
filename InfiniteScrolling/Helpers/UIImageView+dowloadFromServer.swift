@@ -57,9 +57,10 @@ extension UIImageView {
                 return
             }
             
+            imageCache.setObject(image, forKey: NSString(string: url.absoluteString))
+            
             DispatchQueue.main.async() {
                 [weak self] in
-                imageCache.setObject(image, forKey: NSString(string: url.absoluteString))
                 self?.image = image
             }
         }.resume()

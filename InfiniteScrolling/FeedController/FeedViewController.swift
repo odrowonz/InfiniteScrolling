@@ -92,8 +92,8 @@ class FeedViewController: UIViewController {
                 crash: {
                     [weak self] in
                     guard let self = self else { return }
-                    self.isLoading = false
                     self.collectionView.reloadData()
+                    self.isLoading = false
                 },
                 refresh: {
                     [weak self] in
@@ -129,8 +129,6 @@ extension FeedViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return previewArray.count
     }
-    
-
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: FeedCollectionViewCell.self), for: indexPath) as? FeedCollectionViewCell else { return UICollectionViewCell() }
