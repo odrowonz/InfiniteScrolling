@@ -74,7 +74,33 @@ class FeedViewController: UIViewController {
 
         setupLayout()
         
-        loadData()
+        loadMoreData()
+    }
+    
+    func loadMoreData() {
+            if !self.isLoading {
+                self.isLoading = true
+                self.collectionView.collectionViewLayout.invalidateLayout()
+
+                self.viewmodel.getPage(saving: {
+                    [weak self] items in
+                    guard let self = self else { return }
+                    self.previewArray.append(contentsOf: items)
+                    self.collectionView.reloadData()
+                    self.isLoading = false
+                },
+                crash: {
+                    [weak self] in
+                    guard let self = self else { return }
+                    self.isLoading = false
+                    self.collectionView.reloadData()
+                },
+                refresh: {
+                    [weak self] in
+                    guard let self = self else { return }
+                    self.collectionView.reloadData()
+                })
+            }
     }
     
     func setupLayout() {
@@ -90,29 +116,6 @@ class FeedViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
-    func loadData() {
-        isLoading = false
-        collectionView.collectionViewLayout.invalidateLayout()
-        self.viewmodel.getPage(saving: {
-            [weak self] items in
-            guard let self = self else { return }
-            self.previewArray.append(contentsOf: items)
-            self.collectionView.reloadData()
-            self.isLoading = false
-        },
-        crash: {
-            [weak self] in
-            guard let self = self else { return }
-            self.isLoading = false
-            self.collectionView.collectionViewLayout.invalidateLayout()
-        },
-        refresh: {
-            [weak self] in
-            guard let self = self else { return }
-            self.collectionView.reloadData()
-        })
-    }
-    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         if UIDevice.current.orientation.isLandscape {
             maxCountOfItemsInSection = MaxCountOfItemsInSection.horizontal.rawValue
@@ -126,10 +129,12 @@ extension FeedViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return previewArray.count
     }
+    
+
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: FeedCollectionViewCell.self), for: indexPath) as? FeedCollectionViewCell else { return UICollectionViewCell() }
-        
+        cell.reset()
         cell.url = self.previewArray[indexPath.row].urlSmall
         cell.exif = self.previewArray[indexPath.row].exif
         return cell
@@ -140,33 +145,6 @@ extension FeedViewController: UICollectionViewDelegate, UICollectionViewDataSour
             loadMoreData()
         }
     }
-
-    func loadMoreData() {
-            if !self.isLoading {
-                self.isLoading = true
-                
-                self.viewmodel.getPage(saving: {
-                    [weak self] items in
-                    guard let self = self else { return }
-                    self.previewArray.append(contentsOf: items)
-                    self.collectionView.reloadData()
-                    self.isLoading = false
-                },
-                crash: {
-                    [weak self] in
-                    guard let self = self else { return }
-                    self.isLoading = false
-                    self.collectionView.collectionViewLayout.invalidateLayout()
-                },
-                refresh: {
-                    [weak self] in
-                    guard let self = self else { return }
-                    self.collectionView.reloadData()
-                })
-            }
-    }
-
-        
         
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
             if self.isLoading {
@@ -203,5 +181,7 @@ extension FeedViewController: UICollectionViewDelegate, UICollectionViewDataSour
         vc.date = self.previewArray[indexPath.row].downloadDate
         self.navigationController?.pushViewController(vc, animated: true)
     }
+    
+
 
 }

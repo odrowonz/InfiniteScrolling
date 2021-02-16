@@ -54,15 +54,23 @@ class FeedCollectionViewCell: UICollectionViewCell {
         return label
     }()
 
+    func reset() {
+        photoImageView.image = nil
+        exifLabel.text = nil
+        photoImageView.backgroundColor = nil
+    }
+    
+    /*override func prepareForReuse() {
+        reset()
+    }*/
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-
         setupLayout()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-
         setupLayout()
     }
     
