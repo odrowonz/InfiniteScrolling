@@ -45,6 +45,7 @@ class FlickrViewModel: FeedViewModel {
     func getItem(_ i: Int) -> Item {
         return items[i]
     }
+    
     // Loading and saving list of items
     func getNextPage(_ refresh: @escaping(()->Void)) {
         // check number of page
@@ -134,7 +135,7 @@ class FlickrViewModel: FeedViewModel {
                     self.aGroup.notify(queue: DispatchQueue.main) {
                         [weak self] in
                         guard let self = self else { return }
-                        self.items.append(contentsOf: bufferItems)
+                        self.items.append(contentsOf: bufferItems.filter({$0.bigImage != nil && $0.smallImage != nil }))
                         refresh()
                     }
                 } else {

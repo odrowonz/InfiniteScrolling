@@ -86,41 +86,6 @@ class FeedViewController: UIViewController {
                 self.isLoading = false
                 self.collectionView.reloadData()
             }
-
-            /*
-            self.viewmodel.getList(saving: {
-                [weak self] items in
-                guard let self = self else { return }
-                // save start item position
-                let oldCount = self.previewArray.count
-                // save list
-                self.previewArray.append(contentsOf: items)
-                // save last item position
-                let newCount = self.previewArray.count
-                // loop over new elements
-                for i in oldCount..<newCount {
-                    // get exif
-                    self.viewmodel.getExif(id: self.previewArray[i].id , secret: self.previewArray[i].secret) {
-                        [weak self] (exifDic) in
-                        guard let self = self else { return }
-                        self.collectionView.reloadItems(at: [IndexPath(row: i, section: 0)])
-                    }
-                    // get image
-                    self.viewmodel.getImage(url: self.previewArray[i].urlSmall) {
-                        [weak self] image in
-                        guard let self = self else { return }
-                        self.collectionView.reloadItems(at: [IndexPath(row: i, section: 0)])
-                    }
-                }
-                self.isLoading = false
-            },
-            crash: {
-                [weak self] in
-                guard let self = self else { return }
-                self.collectionView.reloadData()
-                self.isLoading = false
-            })
-            */
         }
     }
     
@@ -155,12 +120,17 @@ extension FeedViewController: UICollectionViewDelegate, UICollectionViewDataSour
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: FeedCollectionViewCell.self), for: indexPath) as? FeedCollectionViewCell else { return UICollectionViewCell() }
 
         cell.item = viewmodel.getItem(indexPath.row)
+        cell.itemNumberLabel.text =  "\(indexPath.row) из \(viewmodel.getCount())"
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath.row == viewmodel.getCount() - 10 && !self.isLoading {
-            loadMoreData()
+            DispatchQueue.main.async {
+                [weak self] in
+                guard let self = self else { return }
+                self.loadMoreData()
+            }
         }
     }
        

@@ -21,6 +21,7 @@ class NetworkModel {
                      headers: [String: String],
                      completion: @escaping ([String: Any]?, Error?) -> Void) {
         var components = URLComponents(string: url)!
+        // Each element must be URLQueryItem
         components.queryItems = parameters.map { (key, value) in
             URLQueryItem(name: key, value: value)
         }
