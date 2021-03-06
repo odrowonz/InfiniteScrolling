@@ -49,8 +49,6 @@ class FeedViewController: UIViewController {
     }()
     
     private var viewmodel: FeedViewModel
-    
-    var previewArray = [Item]()
 
     var loadingView: LoadingCollectionViewCell?
 
@@ -78,29 +76,52 @@ class FeedViewController: UIViewController {
     }
     
     func loadMoreData() {
-            if !self.isLoading {
-                self.isLoading = true
-                self.collectionView.collectionViewLayout.invalidateLayout()
-
-                self.viewmodel.getPage(saving: {
-                    [weak self] items in
-                    guard let self = self else { return }
-                    self.previewArray.append(contentsOf: items)
-                    self.collectionView.reloadData()
-                    self.isLoading = false
-                },
-                crash: {
-                    [weak self] in
-                    guard let self = self else { return }
-                    self.collectionView.reloadData()
-                    self.isLoading = false
-                },
-                refresh: {
-                    [weak self] in
-                    guard let self = self else { return }
-                    self.collectionView.reloadData()
-                })
+        if !self.isLoading {
+            self.isLoading = true
+            self.collectionView.collectionViewLayout.invalidateLayout()
+            
+            viewmodel.getNextPage {
+                [weak self] in
+                guard let self = self else { return }
+                self.isLoading = false
+                self.collectionView.reloadData()
             }
+
+            /*
+            self.viewmodel.getList(saving: {
+                [weak self] items in
+                guard let self = self else { return }
+                // save start item position
+                let oldCount = self.previewArray.count
+                // save list
+                self.previewArray.append(contentsOf: items)
+                // save last item position
+                let newCount = self.previewArray.count
+                // loop over new elements
+                for i in oldCount..<newCount {
+                    // get exif
+                    self.viewmodel.getExif(id: self.previewArray[i].id , secret: self.previewArray[i].secret) {
+                        [weak self] (exifDic) in
+                        guard let self = self else { return }
+                        self.collectionView.reloadItems(at: [IndexPath(row: i, section: 0)])
+                    }
+                    // get image
+                    self.viewmodel.getImage(url: self.previewArray[i].urlSmall) {
+                        [weak self] image in
+                        guard let self = self else { return }
+                        self.collectionView.reloadItems(at: [IndexPath(row: i, section: 0)])
+                    }
+                }
+                self.isLoading = false
+            },
+            crash: {
+                [weak self] in
+                guard let self = self else { return }
+                self.collectionView.reloadData()
+                self.isLoading = false
+            })
+            */
+        }
     }
     
     func setupLayout() {
@@ -127,25 +148,24 @@ class FeedViewController: UIViewController {
     
 extension FeedViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return previewArray.count
+        return viewmodel.getCount()
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: FeedCollectionViewCell.self), for: indexPath) as? FeedCollectionViewCell else { return UICollectionViewCell() }
-        cell.reset()
-        cell.url = self.previewArray[indexPath.row].urlSmall
-        cell.exif = self.previewArray[indexPath.row].exif
+
+        cell.item = viewmodel.getItem(indexPath.row)
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row == previewArray.count - 10 && !self.isLoading {
+        if indexPath.row == viewmodel.getCount() - 10 && !self.isLoading {
             loadMoreData()
         }
     }
-        
+       
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-            if self.isLoading {
+            if !self.isLoading {
                 return CGSize.zero
             } else {
                 return CGSize(width: collectionView.bounds.size.width, height: 55)
@@ -175,8 +195,7 @@ extension FeedViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = PictureViewController()
-        vc.url = self.previewArray[indexPath.row].urlBig ?? self.previewArray[indexPath.row].urlSmall
-        vc.date = self.previewArray[indexPath.row].downloadDate
+        vc.item = viewmodel.getItem(indexPath.row)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

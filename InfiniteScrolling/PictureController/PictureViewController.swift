@@ -8,26 +8,22 @@
 import UIKit
 
 class PictureViewController: UIViewController {
-    var url: String? {
+    var item: Item? {
         didSet {
-            guard let url = url else { return }
-            photoImageView.dowloadFromServer(link: url)
+            guard let item = item else { return }
+            if let bigImage = item.bigImage {
+                photoImageView.image = bigImage
+            } else {
+                if let smallImage = item.smallImage {
+                    photoImageView.image = smallImage
+                } else {
+                    photoImageView.image = UIImage(named: "broken")
+                }
+            }
+            downloadDateTimeLabel.text = "Download date: " + item.downloadDate.datetimeToString()
         }
     }
     
-    var date: Date? {
-        didSet {
-            guard let date = date else { return }
-            downloadDateTimeLabel.text = "Download date: " + date.datetimeToString()
-        }
-    }
-    
-    var color: UIColor? {
-        didSet {
-            photoImageView.backgroundColor = color
-        }
-    }
-
     /// Picture (photo)
     private lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()

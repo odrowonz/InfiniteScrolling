@@ -8,32 +8,51 @@
 import UIKit
 
 class FeedCollectionViewCell: UICollectionViewCell {
-    var url: String? {
-        didSet {
-            guard let url = url else { return }
-            photoImageView.dowloadFromServer(link: url)
-        }
-    }
+    weak var model: FeedViewModel?
     
-    var exif: [String: String]? {
+    var item: Item? {
         didSet {
-            guard let exif = exif else { return }
-            if exif.count > 0 {
-                exifLabel.text = exif.reduce("") {
-                    return $0 + $1.key + ": " + $1.value + "\n"
+            guard let item = item else { return }
+            
+            // set image
+            if let smallImage = item.smallImage {
+                photoImageView.image = smallImage
+            } else {
+                photoImageView.image = UIImage(named: "broken")
+            }
+            
+            // set exif
+            guard let exif = item.exif else { return }
+            if exif.exifs.count > 0 {
+                exifLabel.text = exif.exifs.reduce("") {
+                    let key: String
+                    if let tagspace = $1.tagspace {
+                        if let label = $1.label {
+                            key = tagspace + ":" + label
+                        } else {
+                            key = tagspace
+                        }
+                    } else {
+                        if let label = $1.label {
+                            key = label
+                        } else {
+                            return ""
+                        }
+                    }
+                    let value: String = $1.clean ?? ($1.raw ?? "")
+                    if let beforeStr = $0 {
+                        return beforeStr + key + "=" + value + "\n"
+                    } else {
+                        return key + "=" + value + "\n"
+                    }
                 }
             } else {
                 exifLabel.text = "Exif no"
             }
+
         }
     }
     
-    var color: UIColor? {
-        didSet {
-            photoImageView.backgroundColor = color
-        }
-    }
-
     /// Picture (photo)
     private let photoImageView: UIImageView = {
         let imageView = UIImageView()
@@ -53,16 +72,6 @@ class FeedCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .left
         return label
     }()
-
-    func reset() {
-        photoImageView.image = nil
-        exifLabel.text = nil
-        photoImageView.backgroundColor = nil
-    }
-    
-    /*override func prepareForReuse() {
-        reset()
-    }*/
     
     override init(frame: CGRect) {
         super.init(frame: frame)

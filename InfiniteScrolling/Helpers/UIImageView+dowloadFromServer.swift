@@ -35,7 +35,7 @@ extension UIImageView {
         cacheImage(url)
     }
     
-    func dowloadFromServer(url: URL, contentMode mode: UIView.ContentMode = .scaleAspectFit, placeHolder: UIImage?) {
+    func dowloadFromServer(url: URL, contentMode mode: UIView.ContentMode = .scaleAspectFit, placeHolder: UIImage?, refresh: @escaping(()->Void)) {
         contentMode = mode
         
         if let cachedImage = imageCache.object(forKey: NSString(string: url.absoluteString)) {
@@ -53,6 +53,7 @@ extension UIImageView {
                 DispatchQueue.main.async {
                     [weak self] in
                     self?.image = placeHolder
+                    refresh()
                 }
                 return
             }
@@ -65,8 +66,9 @@ extension UIImageView {
             }
         }.resume()
     }
-    func dowloadFromServer(link: String, contentMode mode: UIView.ContentMode = .scaleAspectFit) {
+    
+    func dowloadFromServer(link: String, contentMode mode: UIView.ContentMode = .scaleAspectFit, placeHolder: UIImage?, refresh: @escaping(()->Void)) {
         guard let url = URL(string: link) else { return }
-        dowloadFromServer(url: url, contentMode: mode, placeHolder: UIImage(named: "broken"))
+        dowloadFromServer(url: url, contentMode: mode, placeHolder: placeHolder, refresh: refresh)
     }
 }
