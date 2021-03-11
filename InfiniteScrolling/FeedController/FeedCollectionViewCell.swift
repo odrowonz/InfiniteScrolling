@@ -62,6 +62,17 @@ class FeedCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
+    /// Items's number
+    lazy var itemNumberLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        label.textColor = .red
+        label.numberOfLines = 4
+        label.textAlignment = .center
+        return label
+    }()
+    
     /// Exif
     private lazy var exifLabel: UILabel = {
         let label = UILabel()
@@ -85,7 +96,9 @@ class FeedCollectionViewCell: UICollectionViewCell {
     
     func setupLayout() {
         addSubview(photoImageView)
+        addSubview(itemNumberLabel)
         addSubview(exifLabel)
+        
 
         let constraints = [
             photoImageView.topAnchor.constraint(equalTo: topAnchor),
@@ -95,7 +108,11 @@ class FeedCollectionViewCell: UICollectionViewCell {
             photoImageView.bottomAnchor.constraint(equalTo: exifLabel.topAnchor, constant: -5),
             exifLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
             exifLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5),
-            exifLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5)
+            exifLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
+            
+            itemNumberLabel.topAnchor.constraint(equalTo: topAnchor, constant: 5),
+            itemNumberLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            itemNumberLabel.trailingAnchor.constraint(equalTo: trailingAnchor)
         ]
         NSLayoutConstraint.activate(constraints)
     }

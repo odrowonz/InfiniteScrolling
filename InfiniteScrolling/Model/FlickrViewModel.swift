@@ -45,6 +45,7 @@ class FlickrViewModel: FeedViewModel {
     func getItem(_ i: Int) -> Item {
         return items[i]
     }
+    
     // Loading and saving list of items
     func getNextPage(_ refresh: @escaping(()->Void)) {
         // check number of page
@@ -102,12 +103,9 @@ class FlickrViewModel: FeedViewModel {
                                             completionQueue: DispatchQueue.main) {
                             [weak self] result, error in
                             guard let self = self else { return }
-                            guard let image1 = result else {
-                                self.aGroup.leave()
-                                return
-                            }
+                            defer { self.aGroup.leave() }
+                            guard let image1 = result else { return }
                             item.setBigImage(image1)
-                            self.aGroup.leave()
                         }
                         // Small image
                         self.aGroup.enter()
@@ -116,17 +114,16 @@ class FlickrViewModel: FeedViewModel {
                                             completionQueue: DispatchQueue.main) {
                             [weak self] result, error in
                             guard let self = self else { return }
-                            guard let image1 = result else {
-                                self.aGroup.leave()
-                                return
-                            }
+                            defer { self.aGroup.leave() }
+                            guard let image1 = result else { return }
                             item.setSmallImage(image1)
-                            self.aGroup.leave()
                         }
                         // Exif
                         self.aGroup.enter()
                         self.getExif(id: item.id, secret: item.secret) {
-                            photoExif in
+                            [weak self] photoExif in
+                            guard let self = self else { return }
+                            defer { self.aGroup.leave() }
                             item.setExif(photoExif)
                         }
                     }
@@ -134,7 +131,7 @@ class FlickrViewModel: FeedViewModel {
                     self.aGroup.notify(queue: DispatchQueue.main) {
                         [weak self] in
                         guard let self = self else { return }
-                        self.items.append(contentsOf: bufferItems)
+                        self.items.append(contentsOf: bufferItems.filter({$0.bigImage != nil && $0.smallImage != nil }))
                         refresh()
                     }
                 } else {
@@ -172,23 +169,6 @@ class FlickrViewModel: FeedViewModel {
     
     // Loading and saving an Exif of item
     func getExif(id: String, secret: String?, saving: @escaping ((PhotoExif)->Void)) {
-        //var key: NSString
-        
-        // try get exif from cache
-        /*if let secret = secret {
-            key = NSString(string: id + secret)
-        } else {
-            key = NSString(string: id)
-        }*/
-
-        // maybe it's in cache yet
-        /*if let cacheResult = exifCache.object(forKey: key) {
-            DispatchQueue.main.async() {
-                saving(cacheResult)
-            }
-            return
-        }*/
-        
         // prepare parameters of networking request
         var exifParams = FlickrViewModel.exifParameters
         exifParams["photo_id"] = id
@@ -199,12 +179,7 @@ class FlickrViewModel: FeedViewModel {
                     method: "GET",
                     parameters: exifParams,
                     headers: [:]) {
-            [weak self] responseExif, errorExif in
-            guard let self = self else { return }
-            defer {
-                self.aGroup.leave()
-            }
-            
+            responseExif, errorExif in
             if (errorExif == nil) {
                 // success response
                 if let responseExif = responseExif,
@@ -223,8 +198,11 @@ class FlickrViewModel: FeedViewModel {
                     }
                     DispatchQueue.main.async() {
                         let photoExif = PhotoExif(exifs)
-                        //self.exifCache.setObject(photoExif, forKey: key)
                         saving(photoExif)
+                    }
+                } else {
+                    DispatchQueue.main.async() {
+                        saving(PhotoExif([]))
                     }
                 }
             } else {

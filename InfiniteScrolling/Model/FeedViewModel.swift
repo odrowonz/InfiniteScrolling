@@ -15,9 +15,4 @@ protocol FeedViewModel: AnyObject {
     func getItem(_ i: Int) -> Item
     // Loading and saving list of items
     func getNextPage(_ refresh: @escaping(()->Void))
-    //func getList(saving: @escaping (([Item])->Void), crash: @escaping(()->Void))
-    // Loading and saving an Exif of item
-    //func getExif(id: String, secret: String?, saving: @escaping ((PhotoExif)->Void))
-    // Loading and saving a image of item
-    //func getImage(url: String, saving: @escaping ((UIImage)->Void))
 }
