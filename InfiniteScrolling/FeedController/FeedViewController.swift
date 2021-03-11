@@ -68,7 +68,7 @@ class FeedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationController?.navigationBar.topItem?.title = "Flickr cars"
+        self.navigationController?.navigationBar.topItem?.title = "Flickr flowers"
 
         setupLayout()
         
@@ -120,7 +120,6 @@ extension FeedViewController: UICollectionViewDelegate, UICollectionViewDataSour
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: FeedCollectionViewCell.self), for: indexPath) as? FeedCollectionViewCell else { return UICollectionViewCell() }
 
         cell.item = viewmodel.getItem(indexPath.row)
-        cell.itemNumberLabel.text =  "\(indexPath.row) из \(viewmodel.getCount())"
         return cell
     }
 

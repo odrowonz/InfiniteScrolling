@@ -13,7 +13,7 @@ class FlickrViewModel: FeedViewModel {
     static let apiKey = "52344e91e167a08be273a34de65c5510"
     private static let searchParameters = ["api_key": FlickrViewModel.apiKey,
                              "method": "flickr.photos.search",
-                             "text": "cinema",
+                             "text": "flowers",
                              "privacy_filter": "1",
                              "safe_search": "1",
                              "media": "photos",
