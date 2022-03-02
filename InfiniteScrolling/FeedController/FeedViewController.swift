@@ -69,22 +69,29 @@ class FeedViewController: UIViewController {
         super.viewDidLoad()
         
         self.navigationController?.navigationBar.topItem?.title = "Flickr cars"
-
+        let gest = UILongPressGestureRecognizer(target: self, action: #selector(loadMoreData))
+        self.navigationController?.navigationBar.addGestureRecognizer(gest)
         setupLayout()
         
         loadMoreData()
     }
     
+    @objc
     func loadMoreData() {
         if !self.isLoading {
             self.isLoading = true
             self.collectionView.collectionViewLayout.invalidateLayout()
             
             viewmodel.getNextPage {
-                [weak self] in
-                guard let self = self else { return }
-                self.isLoading = false
-                self.collectionView.reloadData()
+                [weak self]
+                (title: String)
+                in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    self.isLoading = false
+                    self.navigationController?.navigationBar.topItem?.title = title
+                    self.collectionView.reloadData()
+                }
             }
         }
     }
@@ -120,7 +127,7 @@ extension FeedViewController: UICollectionViewDelegate, UICollectionViewDataSour
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: FeedCollectionViewCell.self), for: indexPath) as? FeedCollectionViewCell else { return UICollectionViewCell() }
 
         cell.item = viewmodel.getItem(indexPath.row)
-        cell.itemNumberLabel.text =  "\(indexPath.row) из \(viewmodel.getCount())"
+        cell.itemNumberLabel.text =  "\(indexPath.row + 1) из \(viewmodel.getCount())"
         return cell
     }
 
