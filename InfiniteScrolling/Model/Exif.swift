@@ -1,21 +1,52 @@
-//
-//  Exif.swift
-//  InfiniteScrolling
-//
-//  Created by Andrey Antipov on 21.02.2021.
-//
-
 import Foundation
-class Exif {
-    var tagspace: String?
-    var label: String?
-    var raw: String?
-    var clean: String?
+struct Exif : Codable, CustomStringConvertible, CustomDebugStringConvertible {
+	let tagspace : String?
+	let tagspaceid : Int?
+	let tag : String?
+	let label : String?
+	let raw : Raw?
+    let clean: Raw?
     
-    init(tagspace: String?, label: String?, raw: String?, clean: String?) {
-        self.tagspace = tagspace
-        self.label = label
-        self.raw = raw
-        self.clean = clean
+    var description: String {
+        let part1: String
+        if let key1 = tagspace {
+            if let key2 = label ?? tag {
+                part1 = "\(key1):\(key2)"
+            } else {
+                part1 = "\(key1)"
+            }
+        } else {
+            part1 = ""
+        }
+        
+        if let part2 = clean ?? raw {
+            return "\(part1)=\(part2)"
+        } else {
+            return "\(part1)"
+        }
     }
+    
+    var debugDescription: String {
+        return description
+    }
+    
+	enum CodingKeys: String, CodingKey {
+		case tagspace = "tagspace"
+		case tagspaceid = "tagspaceid"
+		case tag = "tag"
+		case label = "label"
+		case raw = "raw"
+        case clean = "clean"
+	}
+
+	init(from decoder: Decoder) throws {
+		let values = try decoder.container(keyedBy: CodingKeys.self)
+		tagspace = try values.decodeIfPresent(String.self, forKey: .tagspace)
+		tagspaceid = try values.decodeIfPresent(Int.self, forKey: .tagspaceid)
+		tag = try values.decodeIfPresent(String.self, forKey: .tag)
+		label = try values.decodeIfPresent(String.self, forKey: .label)
+		raw = try values.decodeIfPresent(Raw.self, forKey: .raw)
+        clean = try values.decodeIfPresent(Raw.self, forKey: .clean)
+	}
+
 }

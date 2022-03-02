@@ -22,34 +22,11 @@ class FeedCollectionViewCell: UICollectionViewCell {
             }
             
             // set exif
-            guard let exif = item.exif else { return }
-            if exif.exifs.count > 0 {
-                exifLabel.text = exif.exifs.reduce("") {
-                    let key: String
-                    if let tagspace = $1.tagspace {
-                        if let label = $1.label {
-                            key = tagspace + ":" + label
-                        } else {
-                            key = tagspace
-                        }
-                    } else {
-                        if let label = $1.label {
-                            key = label
-                        } else {
-                            return ""
-                        }
-                    }
-                    let value: String = $1.clean ?? ($1.raw ?? "")
-                    if let beforeStr = $0 {
-                        return beforeStr + key + "=" + value + "\n"
-                    } else {
-                        return key + "=" + value + "\n"
-                    }
-                }
+            if let exif = item.exif {
+                exifLabel.text = "\(exif)"
             } else {
                 exifLabel.text = "Exif no"
             }
-
         }
     }
     
