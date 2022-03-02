@@ -7,13 +7,14 @@
 
 import Foundation
 import UIKit
+import CoreData
 
 class FlickrViewModel: FeedViewModel {
     static let baseUrl = "https://www.flickr.com/services/rest/"
     static let apiKey = "52344e91e167a08be273a34de65c5510"
     private static let searchParameters = ["api_key": FlickrViewModel.apiKey,
                              "method": "flickr.photos.search",
-                             "text": "flowers",
+                             "text": "cars",
                              "privacy_filter": "1",
                              "safe_search": "1",
                              "media": "photos",
@@ -25,67 +26,302 @@ class FlickrViewModel: FeedViewModel {
                              "method": "flickr.photos.getExif",
                              "format": "json",
                              "nojsoncallback": "1"]
-
-    // cache images
-    private lazy var imageCache = NSCache<NSString, UIImage>()
-    // cache exif
-    private lazy var exifCache = NSCache<NSString, PhotoExif>()
     
-    private var items: [Item] = []
-    private var totalPagesCount: Int = 1
-    private var currentPage: Int = 0
+    private var context: NSManagedObjectContext
+    
+    private var perPage: Int {
+        set {
+            DispatchQueue.main.async {
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Status")
+                
+                let statusRowCount: Int
+                var obtainedResults: [NSManagedObject]? = nil
+                do {
+                    let results = try self.context.fetch(fetchRequest)
+                    obtainedResults = results as? [NSManagedObject]
+                    statusRowCount = obtainedResults?.count ?? 0
+                } catch {
+                    statusRowCount = 0
+                }
+                
+                if statusRowCount == 0 {
+                    let row = NSEntityDescription.insertNewObject(forEntityName: "Status", into: self.context)
+                    row.setValue(1, forKey: "totalPagesCount")
+                    row.setValue(1, forKey: "currentPage")
+                    row.setValue(100, forKey: "perPage")
+                } else {
+                    let row = obtainedResults?.first
+                    row?.setValue(newValue, forKey: "perPage")
+                }
+                
+                do {
+                    try self.context.save()
+                }
+                catch{
+                    print("There was an error in saving data")
+                }
+            }
+        }
+        get {
+            // Obtaining data from model
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Status")
+            
+            let statusRowCount: Int
+            var obtainedResults: [NSManagedObject]? = nil
+            do {
+                let results = try context.fetch(fetchRequest)
+                obtainedResults = results as? [NSManagedObject]
+                statusRowCount = obtainedResults?.count ?? 0
+            } catch {
+                statusRowCount = 0
+            }
+            
+            if statusRowCount == 0 {
+                let row = NSEntityDescription.insertNewObject(forEntityName: "Status", into: context)
+                row.setValue(1, forKey: "totalPagesCount")
+                row.setValue(1, forKey: "currentPage")
+                row.setValue(100, forKey: "perPage")
+                do {
+                    try context.save()
+                }
+                catch{
+                    print("There was an error in saving data")
+                }
+                return 100
+            } else {
+                let row = obtainedResults?.first
+                return row?.value(forKey: "perPage") as! Int
+            }
+        }
+    }
+    
+    private var totalPagesCount: Int {
+        set {
+            DispatchQueue.main.async {
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Status")
+                
+                let statusRowCount: Int
+                var obtainedResults: [NSManagedObject]? = nil
+                do {
+                    let results = try self.context.fetch(fetchRequest)
+                    obtainedResults = results as? [NSManagedObject]
+                    statusRowCount = obtainedResults?.count ?? 0
+                } catch {
+                    statusRowCount = 0
+                }
+                
+                if statusRowCount == 0 {
+                    let row = NSEntityDescription.insertNewObject(forEntityName: "Status", into: self.context)
+                    row.setValue(1, forKey: "totalPagesCount")
+                    row.setValue(1, forKey: "currentPage")
+                    row.setValue(100, forKey: "perPage")
+                } else {
+                    let row = obtainedResults?.first
+                    row?.setValue(newValue, forKey: "totalPagesCount")
+                }
+                
+                do {
+                    try self.context.save()
+                }
+                catch{
+                    print("There was an error in saving data")
+                }
+            }
+        }
+        get {
+            // Obtaining data from model
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Status")
+            
+            let statusRowCount: Int
+            var obtainedResults: [NSManagedObject]? = nil
+            do {
+                let results = try context.fetch(fetchRequest)
+                obtainedResults = results as? [NSManagedObject]
+                statusRowCount = obtainedResults?.count ?? 0
+            } catch {
+                statusRowCount = 0
+            }
+            
+            if statusRowCount == 0 {
+                let row = NSEntityDescription.insertNewObject(forEntityName: "Status", into: context)
+                row.setValue(1, forKey: "totalPagesCount")
+                row.setValue(1, forKey: "currentPage")
+                row.setValue(100, forKey: "perPage")
+                do {
+                    try context.save()
+                }
+                catch{
+                    print("There was an error in saving data")
+                }
+                return 1
+            } else {
+                let row = obtainedResults?.first
+                return row?.value(forKey: "totalPagesCount") as! Int
+            }
+        }
+    }
+    
+    private var currentPage: Int {
+        set {
+            DispatchQueue.main.async {
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Status")
+                
+                let statusRowCount: Int
+                var obtainedResults: [NSManagedObject]? = nil
+                do {
+                    let results = try self.context.fetch(fetchRequest)
+                    obtainedResults = results as? [NSManagedObject]
+                    statusRowCount = obtainedResults?.count ?? 0
+                } catch {
+                    statusRowCount = 0
+                }
+                
+                if statusRowCount == 0 {
+                    let row = NSEntityDescription.insertNewObject(forEntityName: "Status", into: self.context)
+                    row.setValue(1, forKey: "totalPagesCount")
+                    row.setValue(1, forKey: "currentPage")
+                    row.setValue(100, forKey: "perPage")
+                } else {
+                    let row = obtainedResults?.first
+                    row?.setValue(newValue, forKey: "currentPage")
+                }
+                
+                do {
+                    try self.context.save()
+                }
+                catch{
+                    print("There was an error in saving data")
+                }
+            }
+        }
+        get {
+            // Obtaining data from model
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Status")
+            
+            let statusRowCount: Int
+            var obtainedResults: [NSManagedObject]? = nil
+            do {
+                let results = try context.fetch(fetchRequest)
+                obtainedResults = results as? [NSManagedObject]
+                statusRowCount = obtainedResults?.count ?? 0
+            } catch {
+                statusRowCount = 0
+            }
+            
+            if statusRowCount == 0 {
+                let row = NSEntityDescription.insertNewObject(forEntityName: "Status", into: context)
+                row.setValue(1, forKey: "totalPagesCount")
+                row.setValue(1, forKey: "currentPage")
+                row.setValue(100, forKey: "perPage")
+                do {
+                    try context.save()
+                }
+                catch{
+                    print("There was an error in saving data")
+                }
+                return 1
+            } else {
+                let row = obtainedResults?.first
+                return row?.value(forKey: "currentPage") as! Int
+            }
+        }
+    }
+    
     private var aGroup = DispatchGroup()
+    
+    init(context: NSManagedObjectContext) {
+        // Obtaining data from model
+        self.context = context
+        cacheItems()
+    }
     
     // Get count of item's array
     func getCount() -> Int {
-        return items.count
+        return self.items.count
     }
     
     // Get item
+    private var items: [Item] = []
     func getItem(_ i: Int) -> Item {
         return items[i]
     }
     
-    // Loading and saving list of items
-    func getNextPage(_ refresh: @escaping(()->Void)) {
-        // check number of page
-        if currentPage < totalPagesCount { currentPage += 1 } else {
-            DispatchQueue.main.async {
-                refresh()
-            }
-            return
-        }
+    func cacheItems() {
+        self.items.removeAll()
         
-        // get current page with item's list
-        var searchParams = FlickrViewModel.searchParameters
-        searchParams["page"] = String(currentPage)
-        NetworkModel.shared.sendRequest(FlickrViewModel.baseUrl,
-                    method: "GET",
-                    parameters: searchParams,
-                    headers: [:]) { [weak self]
-            responseSearch, errorSearch in
-            guard let self = self else { return }
-            
-            if (errorSearch == nil) {
-                // count of pages and array of fotos
-                if let responseSearch = responseSearch,
-                   let photos = responseSearch["photos"] as? Dictionary<String, Any>,
-                   let pages = photos["pages"] as? Int,
-                   let photoArr = photos["photo"] as? Array<Any> {
- 
+        // Obtaining data from model
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Items")
+
+        do {
+            let results = try context.fetch(fetchRequest)
+            let obtainedResults = results as! [NSManagedObject]
+            for row in obtainedResults {
+                items.append(Item(id: row.value(forKey: "id") as! String,
+                                  secret: (row.value(forKey: "secret") as! String),
+                                  urlSmall: URL(string: row.value(forKey: "urlSmall") as! String)!,
+                                  smallImage: UIImage(data: row.value(forKey: "smallImage")! as! Data),
+                                  urlBig: URL(string: row.value(forKey: "urlBig") as! String)!,
+                                  bigImage: UIImage(data: row.value(forKey: "bigImage")! as! Data),
+                                  exif: (row.value(forKey: "exif") as! String),
+                                  downloadDate: row.value(forKey: "downloadDate") as! Date))
+            }
+        } catch {
+            //return Item(id: "", secret: "", urlSmall: URL(string: "")!, smallImage: nil, urlBig: URL(string: "")!, bigImage: nil, exif: "", downloadDate: .init())
+        }
+    }
+    
+    // Loading and saving list of items
+    func getNextPage(_ refresh: @escaping((_ title: String)->Void)) {
+        DispatchQueue.global(qos: .utility).async {
+            // get current page with item's list
+            var searchParams = FlickrViewModel.searchParameters
+            searchParams["page"] = String(self.currentPage)
+            searchParams["per_page"] = String(self.perPage)
+            NetworkModel.shared.sendRequest(FlickrViewModel.baseUrl,
+                                            method: "GET",
+                                            parameters: searchParams,
+                                            headers: [:]) {
+                [weak self]
+                (searchResult: Result<SearchFormat>) -> Void in
+                guard let self = self else { return }
+                
+                DispatchQueue.global(qos: .utility).async {
+                    let responseSearch: SearchFormat
+                    switch searchResult {
+                    case .failure(let error):
+                        refresh("\u{2139} Flickr cars")
+                        print(error)
+                        return
+                    case .success(let resultType):
+                        responseSearch = resultType
+                    }
+                    
+                    // count of pages and array of fotos
+                    guard let photos = responseSearch.photos,
+                          //let page = photos.page,
+                          let perPage = photos.perpage,
+                          let pages = photos.pages,
+                          let photoArr = photos.photo else {
+                              // ApiError.invalidModel
+                              refresh("\u{2139} Flickr cars")
+                              return
+                          }
+                    //self.currentPage = page // service has no goot counter
                     self.totalPagesCount = pages
-                    let photoArrDic = photoArr.compactMap({ $0 as? Dictionary<String, Any> })
+                    self.perPage = perPage
+                    
+                    let photoArrDic = photoArr.compactMap({ $0 })
                     
                     var bufferItems: [Item] = []
-                    // let us convert from Dictionary<String, Any> to Item every element
+                    // let us convert from Photo to Item every element
                     for pic in photoArrDic {
                         // append only items with id and small images
-                        if let id = pic["id"] as? String,
-                           let urlSmallStr = pic["url_q"] as? String,
+                        if let id = pic.id,
+                           let urlSmallStr = pic.urlQ,
                            let urlSmall = URL(string: urlSmallStr),
-                           let urlBig = URL(string: pic["url_c"] as? String ?? urlSmallStr)  {
+                           let urlBig = URL(string: pic.urlC ?? urlSmallStr)  {
                             bufferItems.append(Item(id: id,
-                                                    secret: pic["secret"] as? String,
+                                                    secret: pic.secret,
                                                     urlSmall: urlSmall,
                                                     smallImage: nil,
                                                     urlBig: urlBig,
@@ -98,77 +334,84 @@ class FlickrViewModel: FeedViewModel {
                     for item in bufferItems {
                         // Big image
                         self.aGroup.enter()
-                        self.asyncLoadImage(imageURL: item.urlBig,
-                                            runQueue: DispatchQueue.global(),
-                                            completionQueue: DispatchQueue.main) {
-                            [weak self] result, error in
-                            guard let self = self else { return }
-                            defer { self.aGroup.leave() }
-                            guard let image1 = result else { return }
-                            item.setBigImage(image1)
+                        NetworkModel.shared.loadImage(imageURL: item.urlBig) {
+                            [weak self]
+                            loadResult in
+                            
+                            DispatchQueue.main.async {
+                                guard let self = self else { return }
+                                
+                                defer { self.aGroup.leave() }
+                                
+                                switch loadResult {
+                                case .failure(_):
+                                    item.bigImage = nil
+                                    return
+                                case .success(let resultType):
+                                    item.bigImage = resultType
+                                }
+                            }
                         }
                         // Small image
                         self.aGroup.enter()
-                        self.asyncLoadImage(imageURL: item.urlSmall,
-                                            runQueue: DispatchQueue.global(),
-                                            completionQueue: DispatchQueue.main) {
-                            [weak self] result, error in
-                            guard let self = self else { return }
-                            defer { self.aGroup.leave() }
-                            guard let image1 = result else { return }
-                            item.setSmallImage(image1)
+                        NetworkModel.shared.loadImage(imageURL: item.urlSmall) {
+                            [weak self]
+                            loadResult in
+                            
+                            DispatchQueue.main.async {
+                                guard let self = self else { return }
+                                
+                                defer { self.aGroup.leave() }
+                                
+                                switch loadResult {
+                                case .failure(_):
+                                    item.smallImage = nil
+                                    return
+                                case .success(let resultType):
+                                    item.smallImage = resultType
+                                }
+                            }
                         }
                         // Exif
                         self.aGroup.enter()
                         self.getExif(id: item.id, secret: item.secret) {
-                            [weak self] photoExif in
-                            guard let self = self else { return }
-                            defer { self.aGroup.leave() }
-                            item.setExif(photoExif)
+                            [weak self]
+                            exifResult in
+                            
+                            DispatchQueue.main.async {
+                                guard let self = self else { return }
+                                
+                                defer { self.aGroup.leave() }
+                                
+                                switch exifResult {
+                                case .failure(_):
+                                    item.exif = nil
+                                    return
+                                case .success(let resultType):
+                                    item.exif = "\(resultType)"
+                                }
+                            }
                         }
                     }
                     // Callback block for the whole group
                     self.aGroup.notify(queue: DispatchQueue.main) {
                         [weak self] in
                         guard let self = self else { return }
-                        self.items.append(contentsOf: bufferItems.filter({$0.bigImage != nil && $0.smallImage != nil }))
-                        refresh()
+                        self.currentPage += 1
+                        for item in bufferItems.filter({$0.bigImage != nil && $0.smallImage != nil && $0.exif != nil}) {
+                            self.insertItem(item)
+                        }
+                        refresh("\u{1F197} Flickr cars")
                     }
-                } else {
-                    DispatchQueue.main.async {
-                        refresh()
-                    }
-                }
-            } else {
-                DispatchQueue.main.async {
-                    refresh()
-                }
-            }
-        }
-    }
-    
-    // Loading and saving an image
-    func asyncLoadImage(imageURL: URL,
-                        runQueue: DispatchQueue,
-                        completionQueue: DispatchQueue,
-                        completion: @escaping (UIImage?, Error?) -> ()) {
-        runQueue.async {
-            do {
-                let data = try Data(contentsOf: imageURL)
-                completionQueue.async {
-                    completion(UIImage(data: data), nil)
-                }
-            } catch let error {
-                print("catch error")
-                completionQueue.async {
-                    completion(nil, error)
                 }
             }
         }
     }
     
     // Loading and saving an Exif of item
-    func getExif(id: String, secret: String?, saving: @escaping ((PhotoExif)->Void)) {
+    func getExif(id: String,
+                 secret: String?,
+                 completion: @escaping (Result<ExifFormat>) -> Void) {
         // prepare parameters of networking request
         var exifParams = FlickrViewModel.exifParameters
         exifParams["photo_id"] = id
@@ -179,70 +422,31 @@ class FlickrViewModel: FeedViewModel {
                     method: "GET",
                     parameters: exifParams,
                     headers: [:]) {
-            responseExif, errorExif in
-            if (errorExif == nil) {
-                // success response
-                if let responseExif = responseExif,
-                   let photo = responseExif["photo"] as? Dictionary<String, Any>,
-                   let exifArrayAny = photo["exif"] as? Array<Any> {
-                    var exifs: [Exif] = []
-                    for exifAny in exifArrayAny {
-                        if let exifTag = exifAny as? Dictionary<String, Any>,
-                           let raw = exifTag["raw"] as? Dictionary<String, String> {
-                            let clean = exifTag["clean"] as? Dictionary<String, String>
-                            exifs.append(Exif(tagspace: exifTag["tagspace"] as? String,
-                                            label: exifTag["label"] as? String,
-                                            raw: raw["_content"],
-                                            clean: clean?["_content"]))
-                        }
-                    }
-                    DispatchQueue.main.async() {
-                        let photoExif = PhotoExif(exifs)
-                        saving(photoExif)
-                    }
-                } else {
-                    DispatchQueue.main.async() {
-                        saving(PhotoExif([]))
-                    }
-                }
-            } else {
-                DispatchQueue.main.async() {
-                    saving(PhotoExif([]))
-                }
-            }
+            (responseExif: Result<ExifFormat>) -> Void in
+            completion(responseExif)
+            return
         }
     }
     
-    // Loading and saving a image of item
-    /*func getImage(url: String, saving: @escaping ((UIImage)->Void)) {
-        guard let urlURL = URL(string: url) else { return }
+    func insertItem(_ item: Item) {
+        let row = NSEntityDescription.insertNewObject(forEntityName: "Items", into: context)
+        row.setValue(item.id, forKey: "id")
+        row.setValue(item.secret!, forKey: "secret")
+        row.setValue(item.urlSmall.description, forKey: "urlSmall")
+        row.setValue(item.smallImage!.pngData(), forKey: "smallImage")
+        row.setValue(item.urlBig.description, forKey: "urlBig")
+        row.setValue(item.bigImage!.pngData(), forKey: "bigImage")
+        row.setValue(item.exif!, forKey: "exif")
+        row.setValue(item.downloadDate, forKey: "downloadDate")
         
-        if let cacheImage = imageCache.object(forKey: NSString(string: url)) {
-            DispatchQueue.main.async() {
-                saving(cacheImage)
-            }
-            return
+        do {
+            try context.save()
+            self.items.append(item)
         }
-        
-        URLSession.shared.dataTask(with: urlURL) {
-            [weak self] data, response, error in
-            guard
-                let httpURLResponse = response as? HTTPURLResponse,
-                httpURLResponse.statusCode == 200,
-                let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
-                let data = data, error == nil,
-                let image = UIImage(data: data),
-                let self = self
-                else {
-                return
-            }
-            
-            DispatchQueue.main.async() {
-                self.imageCache.setObject(image, forKey: NSString(string: url))
-                saving(image)
-            }
-        }.resume()
-    }*/
+        catch{
+            print("There was an error in saving data")
+        }
+    }
 }
 
 extension FlickrViewModel: NSCopying {

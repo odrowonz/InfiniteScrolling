@@ -16,8 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let windowScene = scene as? UIWindowScene {
             self.window = UIWindow(windowScene: windowScene)
             window?.overrideUserInterfaceStyle = .light
-            
-            let vm = FlickrViewModel()
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            let vm = FlickrViewModel(context: appDelegate.persistentContainer.viewContext)
             let vc: FeedViewController
             if UIDevice.current.orientation.isLandscape {
                 vc = FeedViewController(maxCountOfItemsInSection: MaxCountOfItemsInSection.horizontal.rawValue, viewmodel: vm)

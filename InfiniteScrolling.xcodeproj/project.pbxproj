@@ -8,9 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		DB0500D525E2ACD30072C0E8 /* UILabel+EXIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0500D425E2ACD30072C0E8 /* UILabel+EXIF.swift */; };
-		DB0500D825E2B82B0072C0E8 /* Exif.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0500D725E2B82B0072C0E8 /* Exif.swift */; };
 		DB0500DB25E2DD960072C0E8 /* PhotoExif.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0500DA25E2DD960072C0E8 /* PhotoExif.swift */; };
 		DB05017E25F404B20072C0E8 /* ApiError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB05017D25F404B20072C0E8 /* ApiError.swift */; };
+		DB14FC6127CA513F00ACC35D /* Photos.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB14FC5E27CA513F00ACC35D /* Photos.swift */; };
+		DB14FC6227CA513F00ACC35D /* SearchFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB14FC5F27CA513F00ACC35D /* SearchFormat.swift */; };
+		DB14FC6327CA513F00ACC35D /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB14FC6027CA513F00ACC35D /* Photo.swift */; };
+		DB14FC6527CA721F00ACC35D /* Raw.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB14FC6427CA721F00ACC35D /* Raw.swift */; };
+		DB14FC6727CA725F00ACC35D /* Exif.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB14FC6627CA725F00ACC35D /* Exif.swift */; };
+		DB14FC6B27CA735900ACC35D /* ExifFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB14FC6A27CA735900ACC35D /* ExifFormat.swift */; };
+		DB19AD3627CD6D870002FB58 /* InfiniteScrollingModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB19AD3427CD6D870002FB58 /* InfiniteScrollingModel.xcdatamodeld */; };
+		DB19AD3927CD6FD80002FB58 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB19AD3827CD6FD80002FB58 /* CoreData.framework */; };
 		DBA2087325D58215008F0DDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA2087225D58215008F0DDE /* AppDelegate.swift */; };
 		DBA2087525D58215008F0DDE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA2087425D58215008F0DDE /* SceneDelegate.swift */; };
 		DBA2087C25D58216008F0DDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBA2087B25D58216008F0DDE /* Assets.xcassets */; };
@@ -30,9 +37,16 @@
 
 /* Begin PBXFileReference section */
 		DB0500D425E2ACD30072C0E8 /* UILabel+EXIF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+EXIF.swift"; sourceTree = "<group>"; };
-		DB0500D725E2B82B0072C0E8 /* Exif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exif.swift; sourceTree = "<group>"; };
 		DB0500DA25E2DD960072C0E8 /* PhotoExif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoExif.swift; sourceTree = "<group>"; };
 		DB05017D25F404B20072C0E8 /* ApiError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiError.swift; sourceTree = "<group>"; };
+		DB14FC5E27CA513F00ACC35D /* Photos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photos.swift; sourceTree = "<group>"; };
+		DB14FC5F27CA513F00ACC35D /* SearchFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchFormat.swift; sourceTree = "<group>"; };
+		DB14FC6027CA513F00ACC35D /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		DB14FC6427CA721F00ACC35D /* Raw.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Raw.swift; sourceTree = "<group>"; };
+		DB14FC6627CA725F00ACC35D /* Exif.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exif.swift; sourceTree = "<group>"; };
+		DB14FC6A27CA735900ACC35D /* ExifFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExifFormat.swift; sourceTree = "<group>"; };
+		DB19AD3527CD6D870002FB58 /* InfiniteScrollingModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = InfiniteScrollingModel.xcdatamodel; sourceTree = "<group>"; };
+		DB19AD3827CD6FD80002FB58 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		DBA2086F25D58215008F0DDE /* InfiniteScrolling.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InfiniteScrolling.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBA2087225D58215008F0DDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DBA2087425D58215008F0DDE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -57,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB19AD3927CD6FD80002FB58 /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,11 +86,20 @@
 			path = Errors;
 			sourceTree = "<group>";
 		};
+		DB19AD3727CD6FD80002FB58 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DB19AD3827CD6FD80002FB58 /* CoreData.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DBA2086625D58215008F0DDE = {
 			isa = PBXGroup;
 			children = (
 				DBA2087125D58215008F0DDE /* InfiniteScrolling */,
 				DBA2087025D58215008F0DDE /* Products */,
+				DB19AD3727CD6FD80002FB58 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -116,11 +140,17 @@
 		DBA208B525D9BAB5008F0DDE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				DB14FC6A27CA735900ACC35D /* ExifFormat.swift */,
+				DB14FC6627CA725F00ACC35D /* Exif.swift */,
+				DB14FC6427CA721F00ACC35D /* Raw.swift */,
+				DB14FC5F27CA513F00ACC35D /* SearchFormat.swift */,
+				DB14FC6027CA513F00ACC35D /* Photo.swift */,
+				DB14FC5E27CA513F00ACC35D /* Photos.swift */,
 				DBA208B225D9B3B5008F0DDE /* Item.swift */,
-				DB0500D725E2B82B0072C0E8 /* Exif.swift */,
 				DBA208AA25D96FE7008F0DDE /* FeedViewModel.swift */,
 				DBA208AE25D97C3B008F0DDE /* FlickrViewModel.swift */,
 				DB0500DA25E2DD960072C0E8 /* PhotoExif.swift */,
+				DB19AD3427CD6D870002FB58 /* InfiniteScrollingModel.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -223,22 +253,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB14FC6127CA513F00ACC35D /* Photos.swift in Sources */,
 				DB0500DB25E2DD960072C0E8 /* PhotoExif.swift in Sources */,
 				DB05017E25F404B20072C0E8 /* ApiError.swift in Sources */,
 				DB0500D525E2ACD30072C0E8 /* UILabel+EXIF.swift in Sources */,
+				DB14FC6327CA513F00ACC35D /* Photo.swift in Sources */,
+				DB14FC6B27CA735900ACC35D /* ExifFormat.swift in Sources */,
 				DBA208BB25D9BDF2008F0DDE /* Date+String.swift in Sources */,
+				DB19AD3627CD6D870002FB58 /* InfiniteScrollingModel.xcdatamodeld in Sources */,
 				DBA208AB25D96FE7008F0DDE /* FeedViewModel.swift in Sources */,
 				DBA208AF25D97C3B008F0DDE /* FlickrViewModel.swift in Sources */,
 				DBA208A225D9578F008F0DDE /* NetworkModel.swift in Sources */,
+				DB14FC6727CA725F00ACC35D /* Exif.swift in Sources */,
 				DBA2087325D58215008F0DDE /* AppDelegate.swift in Sources */,
 				DBA208B325D9B3B5008F0DDE /* Item.swift in Sources */,
 				DBA2089A25D9445B008F0DDE /* CustomCollectionViewFlowLayout.swift in Sources */,
 				DBA2088C25D58572008F0DDE /* FeedViewController.swift in Sources */,
 				DBA208A625D95A1B008F0DDE /* UIImageView+dowloadFromServer.swift in Sources */,
-				DB0500D825E2B82B0072C0E8 /* Exif.swift in Sources */,
+				DB14FC6527CA721F00ACC35D /* Raw.swift in Sources */,
 				DBA2088F25D598A5008F0DDE /* FeedCollectionViewCell.swift in Sources */,
 				DBA2089F25D9549C008F0DDE /* PictureViewController.swift in Sources */,
 				DBA2089625D8616B008F0DDE /* LoadingCollectionViewCell.swift in Sources */,
+				DB14FC6227CA513F00ACC35D /* SearchFormat.swift in Sources */,
 				DBA2087525D58215008F0DDE /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -433,6 +469,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		DB19AD3427CD6D870002FB58 /* InfiniteScrollingModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				DB19AD3527CD6D870002FB58 /* InfiniteScrollingModel.xcdatamodel */,
+			);
+			currentVersion = DB19AD3527CD6D870002FB58 /* InfiniteScrollingModel.xcdatamodel */;
+			path = InfiniteScrollingModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = DBA2086725D58215008F0DDE /* Project object */;
 }
