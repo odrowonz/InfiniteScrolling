@@ -10,16 +10,16 @@ import UIKit
 
 class Item {
     
-    var id: String
-    var secret: String?
-    var urlSmall: URL
+    let id: String
+    let secret: String?
+    let urlSmall: URL
     var smallImage: UIImage?
-    var urlBig: URL
+    let urlBig: URL
     var bigImage: UIImage?
-    var exif: PhotoExif?
-    var downloadDate: Date
+    var exif: String?
+    let downloadDate: Date
     
-    init(id: String, secret: String?, urlSmall: URL, smallImage: UIImage?, urlBig: URL, bigImage: UIImage?, exif: PhotoExif?, downloadDate: Date) {
+    init(id: String, secret: String?, urlSmall: URL, smallImage: UIImage?, urlBig: URL, bigImage: UIImage?, exif: String?, downloadDate: Date) {
         self.id = id
         self.secret = secret
         self.urlSmall = urlSmall
@@ -29,7 +29,7 @@ class Item {
         self.exif = exif
         self.downloadDate = downloadDate
     }
-    
+    /*
     func setSmallImage(_ smallImage: UIImage) {
         self.smallImage = smallImage
     }
@@ -38,10 +38,10 @@ class Item {
         self.bigImage = bigImage
     }
     
-    func setExif(_ exif: PhotoExif) {
+    func setExif(_ exif: ExifFormat) {
         self.exif = exif
     }
-    
+    */
     /*func cacheImages() {
         UIImageView.cacheImage(self.urlSmall)
         if let url = self.urlBig { UIImageView.cacheImage(url) }

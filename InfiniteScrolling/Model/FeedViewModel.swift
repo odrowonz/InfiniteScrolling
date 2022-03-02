@@ -14,5 +14,5 @@ protocol FeedViewModel: AnyObject {
     // Get item
     func getItem(_ i: Int) -> Item
     // Loading and saving list of items
-    func getNextPage(_ refresh: @escaping(()->Void))
+    func getNextPage(_ refresh: @escaping((_ title: String)->Void))
 }
