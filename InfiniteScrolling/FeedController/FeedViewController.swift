@@ -71,6 +71,7 @@ class FeedViewController: UIViewController {
         self.navigationController?.navigationBar.topItem?.title = "Flickr cars"
         let gest = UILongPressGestureRecognizer(target: self, action: #selector(loadMoreData))
         self.navigationController?.navigationBar.addGestureRecognizer(gest)
+
         setupLayout()
         
         loadMoreData()
